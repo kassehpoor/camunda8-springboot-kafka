@@ -1,0 +1,70 @@
+version: '3.8'
+services:
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on: [zookeeper]
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+
+  zeebe:
+    image: camunda/zeebe:8.4.2
+    ports:
+      - "26500:26500"
+
+  operate:
+    image: camunda/operate:8.4.2
+    ports:
+      - "8081:8080"
+
+  tasklist:
+    image: camunda/tasklist:8.4.2
+    ports:
+      - "8082:8080"
+
+  discovery-server:
+    build:
+      context: ./discovery-server
+    ports:
+      - "8761:8761"
+
+  gateway:
+    build:
+      context: ./gateway
+    ports:
+      - "8080:8080"
+    depends_on: [kafka, discovery-server]
+
+  workflow-orchestrator:
+    build:
+      context: ./workflow-orchestrator
+    ports:
+      - "8085:8085"
+    depends_on: [kafka, zeebe]
+
+  email-service:
+    build:
+      context: ./email-service
+    ports:
+      - "8092:8092"
+    depends_on: [kafka]
+
+  payment-service:
+    build:
+      context: ./payment-service
+    ports:
+      - "8093:8093"
+    depends_on: [kafka]
+
+networks:
+  default:
+    name: micro-network

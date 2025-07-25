@@ -1,0 +1,11 @@
+<bpmn:process id="process-send-email" name="Send confirmation email" isExecutable="true">
+  <bpmn:startEvent id="start_email" name="Start email"/>
+  
+  <bpmn:serviceTask id="send_email_task" name="Send email">
+    <bpmn:extensionElements>
+      <zeebe:taskDefinition type="send-email"/>
+    </bpmn:extensionElements>
+  </bpmn:serviceTask>
+  
+  <bpmn:endEvent id="end_email" name="Email sent"/>
+</bpmn:process>

@@ -1,0 +1,9 @@
+وابستگی‌ها:
+
+Spring Web
+
+Spring Boot Actuator
+
+Spring Cloud Eureka Client
+
+بعد از ساخت، وابستگی Zeebe gRPC رو دستی اضافه می‌کنیم.

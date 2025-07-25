@@ -1,0 +1,18 @@
+server:
+  port: 8085
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: camunda-consumer
+      auto-offset-reset: earliest
+    listener:
+      missing-topics-fatal: false
+
+zeebe:
+  client:
+    broker:
+      contactPoint: 127.0.0.1:26500
+    security:
+      plaintext: true

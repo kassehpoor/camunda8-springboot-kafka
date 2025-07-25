@@ -1,0 +1,1 @@
+وابستگی‌ها: Spring Web, Spring Cloud Eureka Client, Actuator

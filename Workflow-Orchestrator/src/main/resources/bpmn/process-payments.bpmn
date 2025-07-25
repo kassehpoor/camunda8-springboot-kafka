@@ -1,0 +1,23 @@
+<bpmn:process id="process-payments" name="Process payments" isExecutable="true">
+  <bpmn:startEvent id="start_payment" name="Payment request received"/>
+  
+  <bpmn:scriptTask id="prepare_transaction" name="Prepare transaction">
+    <bpmn:extensionElements>
+      <zeebe:script expression="=total * 1.2" resultVariable="totalWithTax"/>
+    </bpmn:extensionElements>
+  </bpmn:scriptTask>
+  
+  <bpmn:serviceTask id="charge_card" name="Charge credit card">
+    <bpmn:extensionElements>
+      <zeebe:taskDefinition type="charge-credit-card"/>
+    </bpmn:extensionElements>
+  </bpmn:serviceTask>
+
+  <bpmn:callActivity id="call_send_email" name="Send confirmation email">
+    <bpmn:extensionElements>
+      <zeebe:calledElement>process-send-email</zeebe:calledElement>
+    </bpmn:extensionElements>
+  </bpmn:callActivity>
+  
+  <bpmn:endEvent id="end_payment" name="Payment executed"/>
+</bpmn:process>

@@ -1,0 +1,7 @@
+Spring Web
+
+Spring Kafka
+
+Spring Boot Actuator
+
+Eureka Discovery Client
