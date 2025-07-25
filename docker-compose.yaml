@@ -39,7 +39,7 @@ services:
 
   gateway:
     build:
-      context: ./gateway
+      context: ./gateway-server
     ports:
       - "8080:8080"
     depends_on: [kafka, discovery-server]
