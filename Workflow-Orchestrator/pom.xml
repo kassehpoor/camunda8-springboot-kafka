@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tamin</groupId>
-	<artifactId>Workflow-Orchestrator</artifactId>
+	<artifactId>workflow-orchestrator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Workflow-Orchestrator</name>
+	<name>workflow-orchestrator</name>
 	<description>Workflow Orchestrator project for tamin</description>
 	<url/>
 	<licenses>
