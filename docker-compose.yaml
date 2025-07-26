@@ -1,20 +1,51 @@
 version: '3.8'
+
 services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     ports:
       - "2181:2181"
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
-    depends_on: [zookeeper]
     ports:
       - "9092:9092"
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    volumes:
+      - kafka_data:/var/lib/kafka
     environment:
+      KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8089:8080"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local-kafka
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
 
   zeebe:
     image: camunda/zeebe:8.4.2
@@ -25,11 +56,17 @@ services:
     image: camunda/operate:8.4.2
     ports:
       - "8081:8080"
+    depends_on:
+      zeebe:
+        condition: service_started
 
   tasklist:
     image: camunda/tasklist:8.4.2
     ports:
       - "8082:8080"
+    depends_on:
+      zeebe:
+        condition: service_started
 
   discovery-server:
     build:
@@ -42,28 +79,45 @@ services:
       context: ./gateway-server
     ports:
       - "8080:8080"
-    depends_on: [kafka, discovery-server]
+    depends_on:
+      kafka:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
 
   workflow-orchestrator:
     build:
       context: ./workflow-orchestrator
     ports:
       - "8085:8085"
-    depends_on: [kafka, zeebe]
+    depends_on:
+      kafka:
+        condition: service_healthy
+      zeebe:
+        condition: service_started
+    restart: on-failure
 
   email-service:
     build:
       context: ./email-service
     ports:
       - "8092:8092"
-    depends_on: [kafka]
+    depends_on:
+      kafka:
+        condition: service_healthy
 
   payment-service:
     build:
       context: ./payment-service
     ports:
       - "8093:8093"
-    depends_on: [kafka]
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+volumes:
+  kafka_data:
+  zookeeper_data:
 
 networks:
   default:

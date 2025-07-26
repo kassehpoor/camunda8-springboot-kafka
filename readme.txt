@@ -9,6 +9,7 @@ docker-compose up --build -d
 Service	                Description	                  URL
 Zookeeper               Manages Kafka brokers	          localhost:2181
 Kafka	                Message broker	                  localhost:9092
+Kafka UI                                                  localhost:8089
 Zeebe	                Workflow engine	                  localhost:26500
 Operate	                Zeebe workflow monitoring UI	  http://localhost:8081
 Tasklist                Zeebe human task UI	          http://localhost:8082
