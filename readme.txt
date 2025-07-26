@@ -2,6 +2,12 @@ to run project in root folder:
 
 docker-compose up --build -d
 
+docker pull openjdk:21-jdk-slim
+
+docker ps -a
+
+docker-compose logs kafka
+docker-compose logs operate
 
 -------------------------------------------------------------------------------
 🌐 Local URLs for Services
